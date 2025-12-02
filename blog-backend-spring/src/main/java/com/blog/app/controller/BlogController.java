@@ -1,6 +1,8 @@
 package com.blog.app.controller;
 
+import com.blog.app.annotation.RequireRole;
 import com.blog.app.model.Blog;
+import com.blog.app.model.User.Role;
 import com.blog.app.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +33,14 @@ public class BlogController {
     }
 
     @PostMapping
+    @RequireRole({Role.ADMIN, Role.AUTHOR})
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
         Blog createdBlog = blogService.createBlog(blog);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog);
     }
 
     @PutMapping("/{id}")
+    @RequireRole({Role.ADMIN, Role.AUTHOR})
     public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog blogDetails) {
         Blog updatedBlog = blogService.updateBlog(id, blogDetails);
         if (updatedBlog != null) {
@@ -46,6 +50,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
+    @RequireRole({Role.ADMIN})
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         boolean deleted = blogService.deleteBlog(id);
         if (deleted) {

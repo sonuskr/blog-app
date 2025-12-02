@@ -1,6 +1,8 @@
 package com.blog.app.controller;
 
+import com.blog.app.annotation.RequireRole;
 import com.blog.app.model.User;
+import com.blog.app.model.User.Role;
 import com.blog.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+    @RequireRole({Role.ADMIN})
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
@@ -60,6 +63,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @RequireRole({Role.ADMIN})
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         boolean deleted = userService.deleteUser(id);
         if (deleted) {
